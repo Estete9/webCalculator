@@ -55,7 +55,7 @@ function addAdditionalInputToText(button) {
       break;
     // checks for parenthesis
     case nonNumbers[1]:
-      // TODO
+      updateParenthesis(inputText.textContent);
       break;
     case nonNumbers[2]:
       // calculates percentage
@@ -64,7 +64,7 @@ function addAdditionalInputToText(button) {
       break;
     case nonNumbers[3]:
       // checks for positive/negative numbers
-      updateNumberSimbol(button);
+      updateNumberSimbol(inputText.textContent);
       break;
 
     // calculate complete expression
@@ -174,7 +174,46 @@ function updateNumberDecimal(input) {
   }
 }
 
-// function updateNumberSimbol() {
-//   if (inputText.textContent === "") {
-//   }
-// }
+function updateNumberSimbol(input) {
+  if (input === "") {
+    inputText.textContent += "(-";
+    return;
+  }
+}
+
+function updateParenthesis(input) {
+  if (input === "") {
+    inputText.textContent += "(";
+    return;
+  }
+  let shouldClose = null;
+
+  for (i = 0; i < input.length; i++) {
+    if (input[i] === "(") {
+      shouldClose = true;
+    }
+    if (input[i] === ")") {
+      shouldClose = false;
+    }
+  }
+
+    if (!isNaN(input[input.length - 1]) && shouldClose) {
+      inputText.textContent += ")";
+      return;
+    }
+
+    if(isNaN(input[input.length - 1])) {
+      if(input[input.length - 1] ==='.') {
+        inputText.textContent += ")";
+        return;
+      }
+      inputText.textContent += "(";
+      return;
+    }
+    
+    if (shouldClose) {
+      inputText.textContent += ")";
+    } else {
+      inputText.textContent += "(";
+    }
+}
