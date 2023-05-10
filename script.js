@@ -182,38 +182,35 @@ function updateNumberSimbol(input) {
 }
 
 function updateParenthesis(input) {
+  // let shouldClose = false;
+  let numberParenthesis = 0;
+
   if (input === "") {
     inputText.textContent += "(";
     return;
   }
-  let shouldClose = null;
 
   for (i = 0; i < input.length; i++) {
     if (input[i] === "(") {
       shouldClose = true;
+      numberParenthesis++;
+      continue;
     }
     if (input[i] === ")") {
       shouldClose = false;
+      numberParenthesis--;
+      continue;
     }
   }
-
-    if (!isNaN(input[input.length - 1]) && shouldClose) {
-      inputText.textContent += ")";
-      return;
-    }
-
-    if(isNaN(input[input.length - 1])) {
-      if(input[input.length - 1] ==='.') {
-        inputText.textContent += ")";
-        return;
-      }
-      inputText.textContent += "(";
-      return;
-    }
-    
-    if (shouldClose) {
-      inputText.textContent += ")";
-    } else {
-      inputText.textContent += "(";
-    }
+  console.log(numberParenthesis);
+  if (input !== "" && numberParenthesis === 0) {
+    inputText.textContent += "*(";
+  } else if (numberParenthesis <= 0) {
+    inputText.textContent += "(";
+    return;
+  } else if (input[input.length - 1] === "(") {
+    inputText.textContent += "(";
+  } else {
+    inputText.textContent += ")";
+  }
 }
