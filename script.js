@@ -69,7 +69,8 @@ function addAdditionalInputToText(button) {
 
     // calculate complete expression
     case nonNumbers[4]:
-      calculate(inputText.textContent);
+      // calculate(inputText.textContent);
+      resultText.textContent = findSmallestRecursive(inputText.textContent);
       inputText.textContent = "";
       break;
     // adds decimal point
@@ -81,6 +82,19 @@ function addAdditionalInputToText(button) {
 
 // calculation functions
 
+function findSmallestRecursive(input) {
+  // console.log("is not a number " + isNaN(input))
+  if(!isNaN(input)) {
+    return input
+  }
+  if(!input.includes("(")) {
+    return calculate(input);
+  } 
+  
+  return findSmallestRecursive(solveSmallest(input));
+  
+}
+
 function calculate(input) {
   let inputText = "";
   if (input[0] === "(") {
@@ -89,7 +103,7 @@ function calculate(input) {
     inputText = input;
   }
 
-  console.log("in calculate inputText " + inputText);
+  // console.log("in calculate inputText " + inputText);
   let operand1 = null;
   let operator = null;
   let operand2 = null;
@@ -104,9 +118,9 @@ function calculate(input) {
     }
   }
 
-  console.log("in calculate operand1 " + operand1);
-  console.log("in calculate operand2 " + operand2);
-  console.log("in calculate operator " + operator);
+  // console.log("in calculate operand1 " + operand1);
+  // console.log("in calculate operand2 " + operand2);
+  // console.log("in calculate operator " + operator);
 
   switch (operator) {
     case "+":
@@ -122,8 +136,49 @@ function calculate(input) {
       result = (operand1 / operand2).toPrecision(10) / 1;
       break;
   }
-  console.log("in calculate result " + result);
+  // console.log("in calculate result " + result);
   return result;
+}
+
+function solveSmallest(expr) {
+  
+  if(!expr.includes("(")) {
+    return calculate(expr);
+  }
+  
+  let stack = [];
+  let operation = "";
+  let iE = null;
+  let iS = null;
+  loop1: for (i = 0; i < expr.length; i++) {
+    if (expr[i] === ")") {
+      iE = i;
+      iS = null;
+
+      while (stack.length > 0) {
+        // console.log("stack is " + stack);
+        let start = stack.pop();
+        if (start === "(") {
+          iS = stack.length;
+          operation = calculate(expr.substring(iS, iE + 1));
+
+          // console.log("iS is " + iS);
+          // console.log("should break");
+          // console.log("operation " + operation);
+
+          break loop1;
+        }
+      }
+    } else {
+      stack.push(expr[i]);
+    }
+  }
+  let start = expr.substring(0, iS);
+  let end = expr.substring(iE + 1, expr.length);
+  // console.log("start " + start + " end " + end);
+  let resolved = start + operation + end;
+  // console.log("complete " + resolved);
+  return resolved;
 }
 
 function calculatePercentage(inputText) {
