@@ -81,7 +81,15 @@ function addAdditionalInputToText(button) {
 
 // calculation functions
 
-function calculate(inputText) {
+function calculate(input) {
+  let inputText = "";
+  if (input[0] === "(") {
+    inputText = input.substring(1, input.length);
+  } else {
+    inputText = input;
+  }
+
+  console.log("in calculate inputText " + inputText);
   let operand1 = null;
   let operator = null;
   let operand2 = null;
@@ -95,6 +103,11 @@ function calculate(inputText) {
       break;
     }
   }
+
+  console.log("in calculate operand1 " + operand1);
+  console.log("in calculate operand2 " + operand2);
+  console.log("in calculate operator " + operator);
+
   switch (operator) {
     case "+":
       result = (operand1 + operand2).toPrecision(10) / 1;
@@ -109,8 +122,8 @@ function calculate(inputText) {
       result = (operand1 / operand2).toPrecision(10) / 1;
       break;
   }
-
-  resultText.textContent = result;
+  console.log("in calculate result " + result);
+  return result;
 }
 
 function calculatePercentage(inputText) {
@@ -203,12 +216,19 @@ function updateParenthesis(input) {
     }
   }
   console.log(numberParenthesis);
-  if (input !== "" && numberParenthesis === 0) {
+  if (
+    input !== "" &&
+    numberParenthesis === 0 &&
+    !operators.includes(input[input.length - 1])
+  ) {
     inputText.textContent += "*(";
   } else if (numberParenthesis <= 0) {
     inputText.textContent += "(";
     return;
-  } else if (input[input.length - 1] === "(") {
+  } else if (
+    input[input.length - 1] === "(" ||
+    operators.includes(input[input.length - 1])
+  ) {
     inputText.textContent += "(";
   } else {
     inputText.textContent += ")";
